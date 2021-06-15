@@ -4,7 +4,7 @@
 #                                                                            #
 #                        Pi-Star Auto Upgrade Tool                           #
 #                                                                            #
-#     Version 1.0, Code, Design and Development by Andy Taylor (MW0MWZ).     #
+#     Version 1.1, Code, Design and Development by Andy Taylor (MW0MWZ).     #
 #                                                                            #
 #        Make it simple to upgrade to the current version of Pi-Star.        #
 #                                                                            #
@@ -413,6 +413,9 @@ function main_function()
 			echo "Bumping the version information..."
         	        sed -i 's/3.4.1/3.4.2/g' /etc/pistar-release
                 	sed -i 's/3.4.1/3.4.2/g' /etc/motd
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.1 are not supported..."
 		fi
@@ -422,6 +425,9 @@ function main_function()
 			Message="Upgraded from ${pistarCurVersion} to 3.4.3..."
 			sed -i 's/3.4.2/3.4.3/g' /etc/pistar-release
 			sed -i 's/3.4.2/3.4.3/g' /etc/motd
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.2 are not supported..."
 		fi
@@ -435,6 +441,9 @@ function main_function()
 				Message="Upgraded from ${pistarCurVersion} to 3.4.4..."
 				sed -i 's/3.4.3/3.4.4/g' /etc/pistar-release
 				sed -i 's/3.4.3/3.4.4/g' /etc/motd
+				echo $Message
+				exec "$0" "$@"
+				exit 1
 			else
 				Message="In-place upgrades from 3.4.3 are not supported..."
 			fi
@@ -446,6 +455,9 @@ function main_function()
 				Message="Upgraded from ${pistarCurVersion} to 3.4.4..."
 				sed -i 's/3.4.3/3.4.4/g' /etc/pistar-release
 				sed -i 's/3.4.3/3.4.4/g' /etc/motd
+				echo $Message
+				exec "$0" "$@"
+				exit 1
 			else
 				Message="In-place upgrades from 3.4.3 are not supported..."
 			fi
@@ -469,6 +481,9 @@ function main_function()
 			systemctl restart shellinabox
 			echo "Updating firewall..."
 			/usr/local/sbin/pistar-firewall  > /dev/null 2>&1
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -488,6 +503,9 @@ function main_function()
 			sed -i '8i║           ╚═╝     ╚═╝      ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝          ║' /etc/motd
 			sed -i '9i║                                                                       ║' /etc/motd
 			Message="Upgraded from ${pistarCurVersion} to 3.4.6..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -499,6 +517,9 @@ function main_function()
 			apt-get update
 			apt-get install -y libimobiledevice-utils usb-modeswitch usb-modeswitch-data
 			Message="Upgraded from ${pistarCurVersion} to 3.4.7..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -514,6 +535,9 @@ function main_function()
 			rm /tmp/libssl1.0.2_1.0.2l-2+deb9u3_armhf.deb
 			if [ -z "$STY" ]; then exec screen -dm -S update dpkg -i /tmp/shellinabox_2.20_armhf.deb "$0"; fi
 			Message="Upgraded from ${pistarCurVersion} to 3.4.8..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -528,6 +552,9 @@ function main_function()
 			apt-get update
 			apt-get -t jessie-backports install usb-modeswitch usb-modeswitch-data
 			Message="Upgraded from ${pistarCurVersion} to 3.4.9..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -567,6 +594,9 @@ function main_function()
 			systemctl enable ysf2dmr.timer
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.10..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -645,6 +675,9 @@ function main_function()
 
 			# Report the update status
 			Message="Upgraded from ${pistarCurVersion} to 3.4.11..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -750,6 +783,9 @@ function main_function()
 			systemctl enable nxdngateway.timer
 			systemctl enable nxdnparrot.timer
 			Message="Upgraded from ${pistarCurVersion} to 3.4.12..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -832,6 +868,9 @@ function main_function()
 			systemctl enable ysf2p25.timer
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.13..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -898,6 +937,9 @@ function main_function()
 			systemctl enable dmr2ysf.timer
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.14..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -966,6 +1008,9 @@ function main_function()
 			systemctl enable dmr2nxdn.timer
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.15..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1001,6 +1046,9 @@ function main_function()
 			systemctl enable dapnetgateway.timer
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.16..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1022,6 +1070,9 @@ function main_function()
 			systemctl daemon-reload
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.17..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi		
@@ -1057,6 +1108,9 @@ function main_function()
 			systemctl enable mobilegps.timer
 			
 			Message="Upgraded from ${pistarCurVersion} to 3.4.18..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi		
@@ -1083,6 +1137,9 @@ function main_function()
 			/usr/local/sbin/pistar-motdgen
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.19..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi		
@@ -1099,6 +1156,9 @@ function main_function()
 			/usr/local/sbin/pistar-motdgen
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.20..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1136,6 +1196,9 @@ EOF
 			/usr/local/sbin/pistar-motdgen
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.21..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1154,6 +1217,9 @@ EOF
 			apt-get update && apt-get dist-upgrade -y
 			
 			Message="Upgraded from ${pistarCurVersion} to 3.4.22..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1166,6 +1232,9 @@ EOF
 			/usr/local/sbin/pistar-motdgen
 
 			Message="Upgraded from ${pistarCurVersion} to 3.4.23..."
+			echo $Message
+			exec "$0" "$@"
+			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1181,6 +1250,9 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.24..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1193,6 +1265,9 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.25-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1358,6 +1433,9 @@ EOF
 		    echo "WARNING: please update your Pi-Star using the Web interface or execute 'sudo pistar-update' NOW, then reboot"
 
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.26-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1396,6 +1474,9 @@ EOF
 		    systemctl restart mmdvmhost.service
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.27-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1410,6 +1491,9 @@ EOF
 		    upgradeTo415RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.28-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1424,6 +1508,9 @@ EOF
 		    upgradeTo416RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.29-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1438,6 +1525,9 @@ EOF
 		    upgradeTo417RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.30-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1454,6 +1544,9 @@ EOF
 		    chmod 0755 /etc/cron.hourly/pistar-hourly
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.31-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1468,6 +1561,9 @@ EOF
 		    upgradeTo3431RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.32-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1482,6 +1578,9 @@ EOF
 		    upgradeTo419RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.33-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1496,6 +1595,9 @@ EOF
 		    upgradeTo4110RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.34-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1510,6 +1612,9 @@ EOF
 		    upgradeTo4111RMB
 		    
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.35-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
@@ -1517,227 +1622,12 @@ EOF
 	3.4.35-RMB)
 		Message="You are already running the latest version..."
 	;;
-	4.0.0-Beta)
-		Message="This release will not receive upgrades..."
-	;;
-	4.0.0-RC1)
-		sed -i 's/4.0.0-RC1/4.0.0-RC2/g' /etc/pistar-release
-
-		# Update all the startup timers
-		sed -i "/OnStartupSec=/c\\OnStartupSec=20" /lib/systemd/system/pistar-upnp.timer
-		sed -i "/OnStartupSec=/c\\OnStartupSec=20" /lib/systemd/system/dmrgateway.timer
-		sed -i "/OnStartupSec=/c\\OnStartupSec=20" /lib/systemd/system/ircddbgateway.timer
-		sed -i "/OnStartupSec=/c\\OnStartupSec=20" /lib/systemd/system/nxdnparrot.timer
-		sed -i "/OnStartupSec=/c\\OnStartupSec=20" /lib/systemd/system/p25parrot.timer
-		sed -i "/OnStartupSec=/c\\OnStartupSec=20" /lib/systemd/system/ysfparrot.timer
-
-		# Update systemd and enable new services
-		systemctl daemon-reload
-
-		# Fix some broken libs
-		apt-get update && apt-get install --reinstall libraspberrypi0 libraspberrypi-dev libraspberrypi-bin
-
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC2..."
-	;;
-	4.0.0-RC2)
-		sed -i 's/4.0.0-RC2/4.0.0-RC3/g' /etc/pistar-release
-
-		# apt-daily.service
-		echo '[Unit]' > /etc/systemd/system/apt-daily.service
-		echo 'Description=Daily apt download activities' >> /etc/systemd/system/apt-daily.service
-		echo 'Documentation=man:apt(8)' >> /etc/systemd/system/apt-daily.service
-		echo 'ConditionACPower=true' >> /etc/systemd/system/apt-daily.service
-		echo 'After=network-online.target' >> /etc/systemd/system/apt-daily.service
-		echo 'Wants=network-online.target' >> /etc/systemd/system/apt-daily.service
-		echo '' >> /etc/systemd/system/apt-daily.service
-		echo '[Service]' >> /etc/systemd/system/apt-daily.service
-		echo 'Type=oneshot' >> /etc/systemd/system/apt-daily.service
-		echo 'ExecStartPre=/bin/mount -o remount,rw /' >> /etc/systemd/system/apt-daily.service
-		echo 'ExecStartPre=/bin/mount -o remount,rw /boot' >> /etc/systemd/system/apt-daily.service
-		echo 'ExecStart=/usr/lib/apt/apt.systemd.daily update' >> /etc/systemd/system/apt-daily.service
-
-		#apt-daily-upgrade.service 
-		echo '[Unit]' > /etc/systemd/system/apt-daily-upgrade.service
-		echo 'Description=Daily apt upgrade and clean activities' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'Documentation=man:apt(8)' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'ConditionACPower=true' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'After=apt-daily.service' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo '' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo '[Service]' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'Type=oneshot' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'ExecStartPre=/bin/mount -o remount,rw /' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'ExecStartPre=/bin/mount -o remount,rw /boot' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'ExecStart=/usr/lib/apt/apt.systemd.daily install' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'KillMode=process' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'TimeoutStopSec=900' >> /etc/systemd/system/apt-daily-upgrade.service
-
-		# Update systemd and enable new services
-		systemctl daemon-reload
-
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC3..."
-	;;
-	4.0.0-RC3)
-		sed -i 's/4.0.0-RC3/4.0.0-RC4/g' /etc/pistar-release
-
-		# apt-daily.service
-		echo 'ExecStartPost=/bin/mount -o remount,ro /' >> /etc/systemd/system/apt-daily.service
-		echo 'ExecStartPost=/bin/mount -o remount,ro /boot' >> /etc/systemd/system/apt-daily.service
-
-		#apt-daily-upgrade.service 
-		echo 'ExecStartPost=/bin/mount -o remount,ro /' >> /etc/systemd/system/apt-daily-upgrade.service
-		echo 'ExecStartPost=/bin/mount -o remount,ro /boot' >> /etc/systemd/system/apt-daily-upgrade.service
-
-		# Update systemd and enable new services
-		systemctl daemon-reload
-		
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC4..."
-	;;
-	4.0.0-RC4)
-		sed -i 's/4.0.0-RC4/4.0.0-RC5/g' /etc/pistar-release
-
-		echo '#!/bin/sh' > /usr/local/avrdude
-		echo '' >> /usr/local/avrdude
-		echo 'sudo strace -o "|autoreset" -eioctl /usr/bin/avrdude-original $@' >> /usr/local/avrdude
-		
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC5..."
-	;;
-	4.0.0-RC5)
- 		sed -i 's/4.0.0-RC5/4.0.0-RC6/g' /etc/pistar-release
-
-		# MobileGPS Service
-		echo '[Unit]' > /lib/systemd/system/mobilegps.service
-		echo 'Description=Pi-Star MobileGPS Service' >> /lib/systemd/system/mobilegps.service
-		echo 'After=syslog.target network.target' >> /lib/systemd/system/mobilegps.service
-		echo 'Before=mmdvmhost.timer' >> /lib/systemd/system/mobilegps.service
-		echo '' >> /lib/systemd/system/mobilegps.service
-		echo '[Service]' >> /lib/systemd/system/mobilegps.service
-		echo 'Type=forking' >> /lib/systemd/system/mobilegps.service
-		echo 'ExecStart=/usr/local/sbin/mobilegps.service start' >> /lib/systemd/system/mobilegps.service
-		echo 'ExecStop=/usr/local/sbin/mobilegps.service stop' >> /lib/systemd/system/mobilegps.service
-		echo 'ExecReload=/usr/local/sbin/mobilegps.service restart' >> /lib/systemd/system/mobilegps.service
-		echo '' >> /lib/systemd/system/mobilegps.service
-		echo '[Install]' >> /lib/systemd/system/mobilegps.service
-		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.service
-
-		# MobileGPS Timer
-		echo '[Timer]' > /lib/systemd/system/mobilegps.timer
-		echo 'OnStartupSec=20' >> /lib/systemd/system/mobilegps.timer
-		echo '' >> /lib/systemd/system/mobilegps.timer
-		echo '[Install]' >> /lib/systemd/system/mobilegps.timer
-		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.timer
-		
-		systemctl daemon-reload
-		systemctl enable mobilegps.timer
-		
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC6..."
-	;;
-	4.0.0-RC6)
- 		sed -i 's/4.0.0-RC6/4.0.0-RC7/g' /etc/pistar-release
-
-		# Disable SAMBA
-		systemctl stop smbd
-		systemctl stop nmbd
-		LC_ALL=C systemctl disable smbd > /dev/null 2<&1
-		LC_ALL=C systemctl disable nmbd > /dev/null 2<&1
-		systemctl mask smbd
-		systemctl mask nmbd
-		
-		# Disable agetty on tty1
-		systemctl stop getty@tty1.service
-		systemctl disable getty@tty1.service
-		
-		systemctl daemon-reload
-		
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC7..."
-	;;
-	4.0.0-RC7)
-		sed -i 's/4.0.0-RC7/4.0.0-RC8/g' /etc/pistar-release
-
-		# Tweaking avahi
-		sed -i 's/^publish-hinfo=.*/publish-hinfo=yes/g;s/^publish-workstation=.*/publish-workstation=yes/g' /etc/avahi/avahi-daemon.conf
-		sed -i 's/^use-ipv6=.*/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
-		systemctl restart avahi-daemon
-		
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC8..."
-	;;
-	4.0.0-RC8)
-		sed -i 's/4.0.0-RC8/4.0.0-RC9/g' /etc/pistar-release
-
-		# HTTP and SSH avahi services
-		cat << EOF > /etc/avahi/services/http.service 
-<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<service-group>
-<name replace-wildcards="yes">%h Pi-Star Web Interface</name>
-<service>
-<type>_http._tcp</type>
-<port>80</port>
-</service>
-</service-group>
-EOF
-		cat << EOF > /etc/avahi/services/ssh.service 
-<?xml version="1.0" standalone='no'?><!--*-nxml-*-->
-<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<service-group>
-<name replace-wildcards="yes">%h Pi-Star SSH</name>
-<service>
-<type>_ssh._tcp</type>
-<port>22</port>
-</service>
-</service-group>
-EOF
-		systemctl restart avahi-daemon
-		
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC9..."
-	;;
-	4.0.0-RC9)
-		sed -i 's/4.0.0-RC9/4.0.0-RC10/g' /etc/pistar-release
-	    
-		# Re-create the MOTD
-		/usr/local/sbin/pistar-motdgen
-		
-		# OK we are done
-		Message="Upgraded from ${pistarCurVersion} to 4.0.0-RC10..."
-	;;
-	4.0.0-RC10)
-		Message="You are already running the latest version..."
-	;;
-	4.0.0)
-		Message="You are already running the latest version..."
+	4.0.*)
+		Message="Please re-image this system with Pi-Star v4.1.x as soon as possible, this release will not receive any upgrade..."
 	;;
 	4.1.0-Beta)
-		Message="This release will not receive upgrades..."
+		Message="Please re-image this system with the release version Pi-Star v4.1.x as soon as possible."
+
 	;;
 	4.1.0-RC1)
 		sed -i 's/4.1.0-RC1/4.1.0-RC2/g' /etc/pistar-release
@@ -1752,6 +1642,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC2..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC2)
 		sed -i 's/4.1.0-RC2/4.1.0-RC3/g' /etc/pistar-release
@@ -1785,6 +1678,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC3..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC3)
 		sed -i 's/4.1.0-RC3/4.1.0-RC4/g' /etc/pistar-release
@@ -1797,6 +1693,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC4..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC4)
 		sed -i 's/4.1.0-RC4/4.1.0-RC5/g' /etc/pistar-release
@@ -1821,6 +1720,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC5..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC5)
 		sed -i 's/4.1.0-RC5/4.1.0-RC6/g' /etc/pistar-release
@@ -1897,6 +1799,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC6..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC6)
 		sed -i 's/4.1.0-RC6/4.1.0-RC7/g' /etc/pistar-release
@@ -1909,6 +1814,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC7..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC7)
 		sed -i 's/4.1.0-RC7/4.1.0-RC8/g' /etc/pistar-release
@@ -1918,6 +1826,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC8..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC8)
 		sed -i 's/4.1.0-RC8/4.1.0-RC9/g' /etc/pistar-release
@@ -1937,6 +1848,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC9..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC9)
 		sed -i 's/4.1.0-RC9/4.1.0-RC10/g' /etc/pistar-release
@@ -2013,6 +1927,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC10..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC10)
 		sed -i 's/4.1.0-RC10/4.1.0-RC11/g' /etc/pistar-release
@@ -2025,6 +1942,9 @@ EOF
 		
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC11..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RC11)
 		sed -i 's/4.1.0-RC11/4.1.0/g' /etc/pistar-release
@@ -2034,6 +1954,9 @@ EOF
 		
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0)
 		sed -i 's/4.1.0$/4.1.0-RMB/g' /etc/pistar-release
@@ -2045,6 +1968,9 @@ EOF
 		
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.0-RMB)
 		sed -i 's/4.1.0-RMB/4.1.1-RMB/g' /etc/pistar-release
@@ -2064,6 +1990,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.1-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.1)
 		sed -i 's/4.1.1$/4.1.1-RMB/g' /etc/pistar-release
@@ -2076,6 +2005,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.1-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.1-RMB)
 		sed -i 's/4.1.1-RMB/4.1.2-RMB/g' /etc/pistar-release
@@ -2186,6 +2118,9 @@ EOF
 		
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.2-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.2)
 		sed -i 's/4.1.2$/4.1.2-RMB/g' /etc/pistar-release
@@ -2199,6 +2134,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.2-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.2-RMB)
 		sed -i 's/4.1.2-RMB/4.1.3-RMB/g' /etc/pistar-release
@@ -2209,6 +2147,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 
 		Message="Upgraded from ${pistarCurVersion} to 4.1.3-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.3)
 		sed -i 's/4.1.3$/4.1.3-RMB/g' /etc/pistar-release
@@ -2223,6 +2164,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.3-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.3-RMB)
 		sed -i 's/4.1.3-RMB/4.1.4-RMB/g' /etc/pistar-release
@@ -2254,6 +2198,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.4-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.4)
 		sed -i 's/4.1.4$/4.1.3-RMB/g' /etc/pistar-release
@@ -2268,6 +2215,9 @@ EOF
 
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.3-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.4-RMB)
 		sed -i 's/4.1.4-RMB/4.1.5-RMB/g' /etc/pistar-release
@@ -2278,6 +2228,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.5-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.5-RMB)
 		sed -i 's/4.1.5-RMB/4.1.6-RMB/g' /etc/pistar-release
@@ -2288,6 +2241,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.6-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.6-RMB)
 		sed -i 's/4.1.6-RMB/4.1.7-RMB/g' /etc/pistar-release
@@ -2298,6 +2254,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.7-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.7-RMB)
 		sed -i 's/4.1.7-RMB/4.1.8-RMB/g' /etc/pistar-release
@@ -2308,6 +2267,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.8-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.8-RMB)
 		sed -i 's/4.1.8-RMB/4.1.9-RMB/g' /etc/pistar-release
@@ -2318,6 +2280,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.9-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.9-RMB)
 		sed -i 's/4.1.9-RMB/4.1.10-RMB/g' /etc/pistar-release
@@ -2328,6 +2293,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.10-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.10-RMB)
 		sed -i 's/4.1.10-RMB/4.1.11-RMB/g' /etc/pistar-release
@@ -2338,6 +2306,9 @@ EOF
 		/usr/local/sbin/pistar-motdgen
 		
 		Message="Upgraded from ${pistarCurVersion} to 4.1.11-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
 	;;
 	4.1.11-RMB)
 		Message="You are already running the latest version..."
@@ -2348,8 +2319,11 @@ EOF
 	esac
 
 	echo $Message
-	echo "Sleeping a few seconds before making the disk Read-Only..."
-	sleep 3
+	echo "Upgrade process complete, syncing disk cache before making the disk Read-Only"
+	# Make the disk read-only
+	/bin/sync
+	/bin/sync
+	/bin/sync
 	mount -o remount,ro /
         mount -o remount,ro /boot
 	echo "Finished"
