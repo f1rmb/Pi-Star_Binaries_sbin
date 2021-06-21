@@ -379,6 +379,31 @@ function upgradeTo4111RMB()
     systemctl restart mmdvmhost.service
 }
 
+function upgradeTo4112RMB()
+{
+    # Improved pistar-upnp.service unit file
+    echo '[Unit]' > /lib/systemd/system/pistar-upnp.service
+    echo 'Description=PiStar-UPnP network service' >> /lib/systemd/system/pistar-upnp.service
+    echo 'After=network-online.target ircddbgateway.timer' >> /lib/systemd/system/pistar-upnp.service
+    echo 'Wants=network-online.target' >> /lib/systemd/system/pistar-upnp.service
+    echo '' >> /lib/systemd/system/pistar-upnp.service
+    echo '[Service]' >> /lib/systemd/system/pistar-upnp.service
+    echo 'Type=oneshot' >> /lib/systemd/system/pistar-upnp.service
+    echo 'RemainAfterExit=true' >> /lib/systemd/system/pistar-upnp.service
+    echo 'ExecStart=/usr/local/sbin/pistar-upnp.service start' >> /lib/systemd/system/pistar-upnp.service
+    echo 'ExecStopPost=/usr/local/sbin/pistar-upnp.service stop' >> /lib/systemd/system/pistar-upnp.service
+    echo '' >> /lib/systemd/system/pistar-upnp.service
+    echo '[Install]' >> /lib/systemd/system/pistar-upnp.service
+    echo 'WantedBy=multi-user.target' >> /lib/systemd/system/pistar-upnp.service
+    
+    # Update systemd and enable new services
+    systemctl daemon-reload
+    if [[ $(systemctl | grep pistar-upnp.timer | wc -l) -gt 0 ]]; then
+        systemctl stop pistar-upnp.service
+        systemctl start pistar-upnp.service
+    fi
+}
+
 function main_function()
 {
 	# Get the current Modem
@@ -1620,6 +1645,23 @@ EOF
 		fi
 	;;
 	3.4.35-RMB)
+		if [ ! -z "${pistarHardware}" ]; then
+		    sed -i 's/3.4.35-RMB/3.4.36-RMB/g' /etc/pistar-release
+
+		    # Re-create the MOTD
+		    /usr/local/sbin/pistar-motdgen
+
+		    upgradeTo4112RMB
+		    
+		    Message="Upgraded from ${pistarCurVersion} to 3.4.36-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
+		else
+		    Message="In-place upgrades from 3.4.4 are not supported..."
+		fi
+	;;
+	3.4.36-RMB)
 		Message="You are already running the latest version..."
 	;;
 	4.0.*)
@@ -2311,6 +2353,19 @@ EOF
 		exit 1
 	;;
 	4.1.11-RMB)
+		sed -i 's/4.1.11-RMB/4.1.12-RMB/g' /etc/pistar-release
+
+		upgradeTo4112RMB
+		
+ 		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+		
+		Message="Upgraded from ${pistarCurVersion} to 4.1.12-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.12-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
