@@ -196,7 +196,7 @@ main_function() {
 	
 
 	echo "Stopping Services..."
-	PISTAR_REMOUNT_RO="NO" pistar-service fullstop > /dev/null 2>&1
+	PISTAR_REMOUNT_RO="NO" pistar-services fullstop > /dev/null 2>&1
 	
 	echo "Done"
 
@@ -417,7 +417,7 @@ main_function() {
 	/bin/sync
 	
 	echo "Starting Services..."
-	pistar-service start
+	pistar-services start > /dev/null 2>&1
 	echo "Done"
 
 	echo "Updates complete, making the disk Read-Only"
