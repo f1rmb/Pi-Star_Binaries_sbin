@@ -355,7 +355,11 @@ function DoRestore() {
     ## Moving files
     rm -f /etc/dstar-radio.* /etc/bmapi.key /etc/dapnetapi.key /etc/theshield.enabled > /dev/null 2>&1
     mv -f /tmp/config_restore/RSSI.dat /usr/local/etc/ > /dev/null 2>&1
+    
     mv -f /tmp/config_restore/pistar-upnp.service.functions /usr/local/etc/ > /dev/null 2>&1
+    chown root:staff /usr/local/etc/pistar-upnp.service.functions
+    chmod 0644 /usr/local/etc/pistar-upnp.service.functions
+    
     mv -f /tmp/config_restore/gpsd /etc/default/ > /dev/null 2>&1
     mv -f /tmp/config_restore/ircddblocal.php /var/www/dashboard/config/ > /dev/null 2>&1
     mv -f /tmp/config_restore/config.php /var/www/dashboard/config/ > /dev/null 2>&1
