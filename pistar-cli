@@ -184,7 +184,7 @@ function DoBackup() {
 	   "/etc/dapnetgateway" "/etc/p25gateway" "/etc/ysfgateway" "/etc/nxdngateway" "/etc/ysf2dmr" "/etc/ysf2nxdn" "/etc/ysf2p25" 
 	   "/etc/dmr2nxdn" "/etc/dmr2ysf" "/etc/nxdn2dmr" "/etc/dmrgateway" "/etc/starnetserver" "/etc/timeserver" "/etc/theshield.enabled"
 	   "/etc/dstar-radio.*" "/etc/pistar-remote" "/etc/hosts" "/etc/hostname" "/etc/bmapi.key" "/etc/dapnetapi.key" "/etc/aprsgateway" "/etc/default/gpsd"
-	   "/etc/tinyfilemanager-auth.php" "/etc/tinyfilemanager-config.php" "/usr/local/etc/RSSI.dat"
+	   "/etc/tinyfilemanager-auth.php" "/etc/tinyfilemanager-config.php" "/usr/local/etc/RSSI.dat" "/usr/local/etc/pistar-upnp.service.functions"
 	   "/var/www/dashboard/config/ircddblocal.php" "/var/www/dashboard/config/config.php" "/var/www/dashboard/config/language.php"
 	   "/root/*Hosts.txt")
     
@@ -355,6 +355,7 @@ function DoRestore() {
     ## Moving files
     rm -f /etc/dstar-radio.* /etc/bmapi.key /etc/dapnetapi.key /etc/theshield.enabled > /dev/null 2>&1
     mv -f /tmp/config_restore/RSSI.dat /usr/local/etc/ > /dev/null 2>&1
+    mv -f /tmp/config_restore/pistar-upnp.service.functions /usr/local/etc/ > /dev/null 2>&1
     mv -f /tmp/config_restore/gpsd /etc/default/ > /dev/null 2>&1
     mv -f /tmp/config_restore/ircddblocal.php /var/www/dashboard/config/ > /dev/null 2>&1
     mv -f /tmp/config_restore/config.php /var/www/dashboard/config/ > /dev/null 2>&1
