@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+# If envvar PISTAR_REMOUNT_RO is set to "NO", the partitions will remain R/W
+#
+
 if [ "$(id -u)" != "0" ]; then
   echo -e "You need to be root to run this command...\n"
   exit 1
@@ -63,7 +67,9 @@ function stop_services()
     echo -e "\b\b\b: DONE.\b"
     
     # Mount the disk RO
-    mount -o remount,ro /
+    if [ x"$PISTAR_REMOUNT_RO" != "xNO" ]; then
+	mount -o remount,ro /
+    fi
 }
 
 function start_services()
@@ -106,7 +112,9 @@ function start_services()
     echo -e "\b\b\b: DONE.\b"
     
     # Mount the disk RO
-    mount -o remount,ro /
+    if [ x"$PISTAR_REMOUNT_RO" != "xNO" ]; then
+	mount -o remount,ro /
+    fi
 }
 
 case "$1" in
