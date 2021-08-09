@@ -377,9 +377,11 @@ function DoRestore() {
     ircRemotePassword=$(grep remotePassword /etc/ircddbgateway | awk -F'=' '{print $2}')
     sed -i "/password=/c\\password=$ircRemotePassword" /root/.Remote\ Control
 
-    ## Updating hostfiles
-    echo -n " Updating hosts file (may take some time)..."
-    /usr/local/sbin/HostFilesUpdate.sh
+    if [ -z "$NO_HOSTS_UPDATE" ]; then
+	## Updating hostfiles
+	echo -n " Updating hosts file (may take some time)..."
+	/usr/local/sbin/HostFilesUpdate.sh
+    fi
     
     _ro
 
