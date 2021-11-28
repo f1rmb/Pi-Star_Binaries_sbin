@@ -24,7 +24,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-VERSION_STRING="0.0.9"
+VERSION_STRING="0.0.10"
 BACKUP_ROOT_DIR="/var/backups/pistar"
 BACKUP_CATALOG="$BACKUP_ROOT_DIR/catalog"
 
@@ -181,7 +181,7 @@ function DoBackup() {
     fi
     
     files=("/etc/wpa_supplicant/wpa_supplicant.conf" "/etc/hostapd/hostapd.conf" "/etc/pistar-css.ini" "/etc/ircddbgateway" "/etc/mmdvmhost" "/etc/dstarrepeater"
-	   "/etc/dapnetgateway" "/etc/p25gateway" "/etc/ysfgateway" "/etc/nxdngateway" "/etc/ysf2dmr" "/etc/ysf2nxdn" "/etc/ysf2p25" 
+	   "/etc/dapnetgateway" "/etc/p25gateway" "/etc/ysfgateway" "/etc/dgidgateway" "/etc/nxdngateway" "/etc/ysf2dmr" "/etc/ysf2nxdn" "/etc/ysf2p25" 
 	   "/etc/dmr2nxdn" "/etc/dmr2ysf" "/etc/nxdn2dmr" "/etc/dmrgateway" "/etc/starnetserver" "/etc/timeserver" "/etc/theshield.enabled"
 	   "/etc/dstar-radio.*" "/etc/pistar-remote" "/etc/hosts" "/etc/hostname" "/etc/bmapi.key" "/etc/dapnetapi.key" "/etc/aprsgateway" "/etc/default/gpsd"
 	   "/etc/tinyfilemanager-auth.php" "/etc/tinyfilemanager-config.php" "/usr/local/etc/RSSI.dat" "/usr/local/etc/pistar-upnp.service.functions"
