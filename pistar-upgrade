@@ -2557,7 +2557,7 @@ EOF
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 		
-		Message="Upgraded from ${pistarCurVersion} to 4.1.13-RMB..."
+		Message="Upgraded from ${pistarCurVersion} to 4.1.14-RMB..."
 		echo $Message
 		exec "$0" "$@"
 		exit 1
