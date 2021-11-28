@@ -425,6 +425,9 @@ function upgradeTo4113RMB()
     echo '' >> /lib/systemd/system/dgidgateway.timer
     echo '[Install]' >> /lib/systemd/system/dgidgateway.timer
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/dgidgateway.timer
+
+    # Add GDIdGateway timer to the APRS timer deps. 
+    sed -i 's/Before=.*/Before=mmdvmhost.timer ircddbgateway.timer ysfgateway.timer nxdngateway.timer dgidgateway.timer/g' /lib/systemd/system/aprsgateway.service
     
     # We are not auto-starting this daemon on purpose, we're not ready for that.
     systemctl daemon-reload
