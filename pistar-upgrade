@@ -457,11 +457,11 @@ function upgradeTo4113RMB()
     echo 'Description=Pi-Star' >> /etc/dgidgateway
     echo '' >> /etc/dgidgateway
     echo '[Log]' >> /etc/dgidgateway
-    echo 'DisplayLevel=1' >> /etc/dgidgateway
+    echo 'DisplayLevel=0' >> /etc/dgidgateway
     echo 'FileLevel=1' >> /etc/dgidgateway
     echo 'FilePath=/var/log/pi-star' >> /etc/dgidgateway
     echo 'FileRoot=DGIdGateway' >> /etc/dgidgateway
-    echo 'FileRotate=0' >> /etc/dgidgatewayn
+    echo 'FileRotate=1' >> /etc/dgidgateway
     echo '' >> /etc/dgidgateway
     echo '[APRS]' >> /etc/dgidgateway
     echo 'Enable=0' >> /etc/dgidgateway
