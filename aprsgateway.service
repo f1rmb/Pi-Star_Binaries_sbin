@@ -28,7 +28,11 @@ ipVar=`hostname -I | cut -d' ' -f1`
 test -x ${DAEMON_PATH}${DAEMON} || exit 1
 test -r $CONFIG || exit 1
 
-if [ "$(grep aprsEnabled /etc/ircddbgateway | awk -F '=' '{print $2}')" != "1" ]; then
+if [[ $(egrep -h -i "1234567|M1ABC" ${CONFIG} | wc -l) -gt 0 ]]; then
+    exit 1;
+fi
+
+if [ `sed -n '/^\[Enabled\]/,/^\[/p' /etc/aprsgateway | grep "^Enable" | awk -F '=' '{print $2}'` != 1 ]; then
     exit 1;
 fi
 
