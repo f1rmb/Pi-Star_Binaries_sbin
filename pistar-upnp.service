@@ -20,7 +20,7 @@ ipVar=$(hostname -I | cut -d' ' -f1)
 hostVar=$(hostname | cut -d'.' -f1)
 
 # Pre-flight checks...
-test -x ${DAEMON_PATH}${DAEMON} || exit 1
+test -x ${DAEMON_PATH}${DAEMON} || exit 0
 
 # Check that the network is UP and die if its not
 if [ "$(expr length ${ipVar}x)" == "1" ]; then
@@ -140,5 +140,5 @@ case "$1" in
     
 	*)
 		echo $"Usage: $0 {start|stop}"
-		exit 1
+		exit 0
 esac
