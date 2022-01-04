@@ -37,14 +37,14 @@ function upgradeTo410RMB()
     echo '' >> /lib/systemd/system/mobilegps.service
     echo '[Install]' >> /lib/systemd/system/mobilegps.service
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.service
-    
+
     # MobileGPS Timer
     echo '[Timer]' > /lib/systemd/system/mobilegps.timer
     echo 'OnStartupSec=20' >> /lib/systemd/system/mobilegps.timer
     echo '' >> /lib/systemd/system/mobilegps.timer
     echo '[Install]' >> /lib/systemd/system/mobilegps.timer
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.timer
-    
+
     # Disable SAMBA
     systemctl stop smbd
     systemctl stop nmbd
@@ -52,17 +52,17 @@ function upgradeTo410RMB()
     LC_ALL=C systemctl disable nmbd > /dev/null 2<&1
     systemctl mask smbd
     systemctl mask nmbd
-    
+
     # Disable agetty on tty1
     systemctl stop getty@tty1.service
     systemctl disable getty@tty1.service
-    
+
     # Tweaking avahi
     sed -i 's/^publish-hinfo=.*/publish-hinfo=yes/g;s/^publish-workstation=.*/publish-workstation=yes/g' /etc/avahi/avahi-daemon.conf
     sed -i 's/^use-ipv6=.*/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
-    
+
     # HTTP and SSH avahi services
-    cat << EOF > /etc/avahi/services/http.service 
+    cat << EOF > /etc/avahi/services/http.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -73,7 +73,7 @@ function upgradeTo410RMB()
 </service>
 </service-group>
 EOF
-    cat << EOF > /etc/avahi/services/ssh.service 
+    cat << EOF > /etc/avahi/services/ssh.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -86,7 +86,7 @@ EOF
 EOF
 
     systemctl restart avahi-daemon
-    
+
     systemctl daemon-reload
     systemctl enable mobilegps.timer
 }
@@ -105,14 +105,14 @@ function upgradeTo412RMB()
 {
     systemctl stop mobilegps.service
     systemctl disable mobilegps.service
-    
+
     # Disable unattended-upgrades, no background python process please,
     # this is a RPi (zero possibly).
     # Now, it's triggered by the pistar daily cron job (waaayyyyy enough)
     systemctl stop unattended-upgrades
     LC_ALL=C systemctl disable unattended-upgrades > /dev/null 2<&1
     systemctl mask unattended-upgrades
-    
+
     systemctl daemon-reload
     systemctl enable mobilegps.service
 }
@@ -135,7 +135,7 @@ function upgradeTo413RMB()
 
     # Change default font
     grep -q 'font-family' /etc/shellinabox/options-available/00_White\ On\ Black.css || (echo -e '#vt100 #console, #vt100 #alt_console, #vt100 #cursor, #vt100 #lineheight {\n  font-family: monospace;\n  font-size: 12pt;\n}\n' >> /etc/shellinabox/options-available/00_White\ On\ Black.css)
-    
+
     systemctl reload nginx.service
 
     # Add pistar-service bash completion
@@ -166,7 +166,7 @@ function upgradeTo413RMB()
     rm -f /lib/systemd/system/mobilegps.service
 
     systemctl daemon-reload
-    
+
     # Install GPSd
     apt-get install -y libgps-dev gpsd
 
@@ -210,7 +210,7 @@ function upgradeTo413RMB()
     systemctl enable nextiondriver.service
     systemctl restart nextiondriver.service
     systemctl restart mmdvmhost.service
-    
+
     echo "WARNING: please update your Pi-Star using the Web interface or execute 'sudo pistar-update' NOW, then reboot."
 }
 
@@ -230,14 +230,14 @@ function upgradeTo415RMB()
     echo '' >> /lib/systemd/system/aprsgateway.service
     echo '[Install]' >> /lib/systemd/system/aprsgateway.service
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/aprsgateway.service
-    
+
     # APRSGateway Timer
     echo '[Timer]' > /lib/systemd/system/aprsgateway.timer
     echo 'OnStartupSec=20' >> /lib/systemd/system/aprsgateway.timer
     echo '' >> /lib/systemd/system/aprsgateway.timer
     echo '[Install]' >> /lib/systemd/system/aprsgateway.timer
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/aprsgateway.timer
-    
+
     systemctl daemon-reload
     systemctl enable aprsgateway.timer
 }
@@ -258,7 +258,7 @@ function upgradeTo416RMB()
     echo '' >> /lib/systemd/system/aprsgateway.service
     echo '[Install]' >> /lib/systemd/system/aprsgateway.service
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/aprsgateway.service
-    
+
     systemctl daemon-reload
 }
 
@@ -298,7 +298,7 @@ function upgradeTo419RMB()
 function upgradeTo4110RMB()
 {
     systemctl stop mmdvmhost.service
-    
+
     # Setup systemd unit files for Nextion Driver
     echo '[Unit]' > /lib/systemd/system/nextiondriver.service
     echo 'Description=NextionDriver service' >> /lib/systemd/system/nextiondriver.service
@@ -336,7 +336,7 @@ function upgradeTo4110RMB()
     curl --fail -o /usr/local/etc/stripped.csv -s https://database.radioid.net/static/user.csv
 
     systemctl unmask nextiondriver.service
-		
+
     # Enable the service
     systemctl daemon-reload
     systemctl stop nextiondriver.service
@@ -351,7 +351,7 @@ function upgradeTo4111RMB()
     systemctl stop mmdvmhost.service
     systemctl stop nextiondriver.service
     /usr/bin/killall -9 NextionDriver
-    
+
     # Setup systemd unit files for Nextion Driver
     echo '[Unit]' > /lib/systemd/system/nextiondriver.service
     echo 'Description=NextionDriver service' >> /lib/systemd/system/nextiondriver.service
@@ -395,7 +395,7 @@ function upgradeTo4112RMB()
     echo '' >> /lib/systemd/system/pistar-upnp.service
     echo '[Install]' >> /lib/systemd/system/pistar-upnp.service
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/pistar-upnp.service
-    
+
     # Update systemd and enable new services
     systemctl daemon-reload
     if [[ $(systemctl | grep pistar-upnp.timer | wc -l) -gt 0 ]]; then
@@ -404,7 +404,7 @@ function upgradeTo4112RMB()
     fi
 }
 
-function upgradeTo4113RMB()
+function upgradeTo4114RMB()
 {
     # Create DGIdGateway Unit files
     echo '[Unit]' > /lib/systemd/system/dgidgateway.service
@@ -419,19 +419,19 @@ function upgradeTo4113RMB()
     echo '' >> /lib/systemd/system/dgidgateway.service
     echo '[Install]' >> /lib/systemd/system/dgidgateway.service
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/dgidgateway.service
-    
+
     echo '[Timer]' > /lib/systemd/system/dgidgateway.timer
     echo 'OnStartupSec=20' >> /lib/systemd/system/dgidgateway.timer
     echo '' >> /lib/systemd/system/dgidgateway.timer
     echo '[Install]' >> /lib/systemd/system/dgidgateway.timer
     echo 'WantedBy=multi-user.target' >> /lib/systemd/system/dgidgateway.timer
 
-    # Add GDIdGateway timer to the APRS timer deps. 
+    # Add GDIdGateway timer to the APRS timer deps.
     sed -i 's/Before=.*/Before=mmdvmhost.timer ircddbgateway.timer ysfgateway.timer nxdngateway.timer dgidgateway.timer/g' /lib/systemd/system/aprsgateway.service
-    
+
     # We are not auto-starting this daemon on purpose, we're not ready for that.
     systemctl daemon-reload
-    
+
     # Add the DGIdGateway Config
     echo '[General]' > /etc/dgidgateway
     echo 'Callsign=M1ABC' >> /etc/dgidgateway
@@ -503,6 +503,58 @@ function upgradeTo4113RMB()
     echo '' >> /etc/dgidgateway
     echo '[Enabled]' >> /etc/dgidgateway
     echo 'Enabled=0' >> /etc/dgidgateway
+}
+
+function upgradeTo4115RMB()
+{
+    mkdir -p /usr/local/etc/M17_Audio
+    curl --fail -o /usr/local/etc/M17_Audio/de_DE.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/de_DE.indx
+    curl --fail -o /usr/local/etc/M17_Audio/de_DE.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/de_DE.m17
+    curl --fail -o /usr/local/etc/M17_Audio/dk_DK.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/dk_DK.indx
+    curl --fail -o /usr/local/etc/M17_Audio/dk_DK.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/dk_DK.m17
+    curl --fail -o /usr/local/etc/M17_Audio/en_GB.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/en_GB.indx
+    curl --fail -o /usr/local/etc/M17_Audio/en_GB.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/en_GB.m17
+    curl --fail -o /usr/local/etc/M17_Audio/en_US.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/en_US.indx
+    curl --fail -o /usr/local/etc/M17_Audio/en_US.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/en_US.m17
+    curl --fail -o /usr/local/etc/M17_Audio/es_ES.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/es_ES.indx
+    curl --fail -o /usr/local/etc/M17_Audio/es_ES.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/es_ES.m17
+    curl --fail -o /usr/local/etc/M17_Audio/fr_FR.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/fr_FR.indx
+    curl --fail -o /usr/local/etc/M17_Audio/fr_FR.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/fr_FR.m17
+    curl --fail -o /usr/local/etc/M17_Audio/it_IT.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/it_IT.indx
+    curl --fail -o /usr/local/etc/M17_Audio/it_IT.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/it_IT.m17
+    curl --fail -o /usr/local/etc/M17_Audio/pl_PL.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/pl_PL.indx
+    curl --fail -o /usr/local/etc/M17_Audio/pl_PL.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/pl_PL.m17
+    curl --fail -o /usr/local/etc/M17_Audio/se_SE.indx -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/se_SE.indx
+    curl --fail -o /usr/local/etc/M17_Audio/se_SE.m17 -s https://raw.githubusercontent.com/g4klx/M17Gateway/master/Audio/se_SE.m17
+
+    # Install M17Gateway service files
+cat << EOF > /etc/systemd/system/m17gateway.service
+[Unit]
+Description=M17 Servce
+After=syslog.target network.target mmdvmhost.timer
+
+[Service]
+Type=forking
+ExecStart=/usr/local/sbin/m17gateway.service start
+ExecStop=/usr/local/sbin/m17gateway.service stop
+ExecReload=/usr/local/sbin/m17gateway.service restart
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat << EOF > /etc/systemd/system/m17gateway.timer
+[Timer]
+OnStartupSec=20
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    systemctl daemon-reload
+    systemctl enable m17gateway.service
+    systemctl enable m17gateway.timer
+
 }
 
 function main_function()
@@ -1201,7 +1253,7 @@ function main_function()
 			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
-		fi		
+		fi
 	;;
 	3.4.17)
 		if [ ! -z "${pistarHardware}" ]; then
@@ -1222,24 +1274,24 @@ function main_function()
 			echo '' >> /lib/systemd/system/mobilegps.service
 			echo '[Install]' >> /lib/systemd/system/mobilegps.service
 			echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.service
-			
+
 			# MobileGPS Timer
 			echo '[Timer]' > /lib/systemd/system/mobilegps.timer
 			echo 'OnStartupSec=20' >> /lib/systemd/system/mobilegps.timer
 			echo '' >> /lib/systemd/system/mobilegps.timer
 			echo '[Install]' >> /lib/systemd/system/mobilegps.timer
 			echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.timer
-			
+
 			systemctl daemon-reload
 			systemctl enable mobilegps.timer
-			
+
 			Message="Upgraded from ${pistarCurVersion} to 3.4.18..."
 			echo $Message
 			exec "$0" "$@"
 			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
-		fi		
+		fi
 	;;
 	3.4.18)
 		if [ ! -z "${pistarHardware}" ]; then
@@ -1268,7 +1320,7 @@ function main_function()
 			exit 1
 		else
 			Message="In-place upgrades from 3.4.4 are not supported..."
-		fi		
+		fi
 	;;
 	3.4.19)
 		if [ ! -z "${pistarHardware}" ]; then
@@ -1294,7 +1346,7 @@ function main_function()
 			sed -i 's/3.4.20/3.4.21/g' /etc/pistar-release
 
 			# HTTP and SSH avahi services
-			cat << EOF > /etc/avahi/services/http.service 
+			cat << EOF > /etc/avahi/services/http.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -1305,7 +1357,7 @@ function main_function()
 </service>
 </service-group>
 EOF
-			cat << EOF > /etc/avahi/services/ssh.service 
+			cat << EOF > /etc/avahi/services/ssh.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -1317,7 +1369,7 @@ EOF
 </service-group>
 EOF
 			systemctl restart avahi-daemon
-		
+
 			# Re-create the MOTD
 			/usr/local/sbin/pistar-motdgen
 
@@ -1335,13 +1387,13 @@ EOF
 
 			echo 'deb [check-valid-until=no] http://archive.debian.org/debian jessie-backports main contrib non-free' > /etc/apt/sources.list.d/jessie-backports.list
 			echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/100disablechecks
-			
+
 			# Re-create the MOTD
 			/usr/local/sbin/pistar-motdgen
 
 			## Force system update (required in 3.4.x)
 			apt-get update && apt-get dist-upgrade -y
-			
+
 			Message="Upgraded from ${pistarCurVersion} to 3.4.22..."
 			echo $Message
 			exec "$0" "$@"
@@ -1371,10 +1423,10 @@ EOF
 
 		    # Update ircDDB config for latest binaries (xlx related)
 		    echo -e "xlxEnabled=0\nxlxOverrideLocal=0\nxlxHostsFileUrl=" >> /etc/ircddbgateway
-		    
+
 		    # Re-create the MOTD
 		    /usr/local/sbin/pistar-motdgen
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.24..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1389,7 +1441,7 @@ EOF
 
 		    # Re-create the MOTD
 		    /usr/local/sbin/pistar-motdgen
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.25-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1405,7 +1457,7 @@ EOF
 
 		    # Re-create the MOTD
 		    /usr/local/sbin/pistar-motdgen
-		    
+
 		    # Disable the Load/Save RFKill status - it complains on every boot.
 		    systemctl mask systemd-rfkill.service
 		    # Clean out some remaining files
@@ -1413,7 +1465,7 @@ EOF
 
 		    # Enable the service
 		    systemctl daemon-reload
-		    
+
 		    # Modify the /boot/config.txt to bring it up to date
 		    sed -i '/USB Current/d' /boot/config.txt
 		    sed -i '/max_usb_current/d' /boot/config.txt
@@ -1428,10 +1480,10 @@ EOF
 		    echo "" >> /boot/config.txt
 		    echo "[all]" >> /boot/config.txt
 		    echo "#dtoverlay=vc4-fkms-v3d" >> /boot/config.txt
-		    
+
 		    # Remove the exim4 stuff from fstab
 		    sed -i '/exim4/d' /etc/fstab
-		    
+
 		    # Add Captive Portal enhancement
 		    echo "address=/www.msftconnecttest.com/192.168.50.1" >>/etc/dnsmasq.conf
 		    echo "address=/www.msftncsi.com/192.168.50.1" >>/etc/dnsmasq.conf
@@ -1442,7 +1494,7 @@ EOF
 		    echo "address=/captive.apple.com/192.168.50.1" >>/etc/dnsmasq.conf
 		    echo "address=/www.apple.com/192.168.50.1" >>/etc/dnsmasq.conf
 		    echo "address=/.apple.com.edgekey.net/192.168.50.1" >>/etc/dnsmasq.conf
-		    
+
 		    # Add the Captive Portal to nginx
 		    echo "server_names_hash_bucket_size 64;" > /etc/nginx/sites-available/captive-portal
 		    echo "" >> /etc/nginx/sites-available/captive-portal
@@ -1494,12 +1546,12 @@ EOF
 		    echo "	# Load the defaults" >> /etc/nginx/sites-available/captive-portal
 		    echo "	include             /etc/nginx/default.d/*.conf;" >> /etc/nginx/sites-available/captive-portal
 		    echo "}" >> /etc/nginx/sites-available/captive-portal
-		    
+
 		    # Link the new site into site-enabled
 		    cd /etc/nginx/sites-enabled
 		    ln -sf ../sites-available/captive-portal ./
 		    cd
-		    		    
+
 		    # Enable localhost-only for shellinabox (along with nginx proxy)
 		    echo "    location ^~ /shell/ {" > /etc/nginx/default.d/shellinabox.conf
 		    echo "         proxy_pass http://127.0.0.1:2222;" >> /etc/nginx/default.d/shellinabox.conf
@@ -1513,12 +1565,12 @@ EOF
 		    echo "    }" >> /etc/nginx/default.d/shellinabox.conf
 
 		    grep -q 'SHELLINABOX_ARGS' /etc/default/shellinabox && (grep -q '^SHELLINABOX_ARGS=.*localhost\-only' /etc/default/shellinabox || (sed -i 's/^SHELLINABOX_ARGS\=\"--no-beep/SHELLINABOX_ARGS\=\"--no-beep --localhost-only/g' /etc/default/shellinabox))
-		    
+
 		    # Change default font
 		    grep -q 'font-family' /etc/shellinabox/options-available/00_White\ On\ Black.css || (echo -e '#vt100 #console, #vt100 #alt_console, #vt100 #cursor, #vt100 #lineheight {\n  font-family: monospace;\n  font-size: 12pt;\n}\n' >> /etc/shellinabox/options-available/00_White\ On\ Black.css)
 
 		    systemctl reload nginx.service
-		    
+
 		    # Add pistar-service bash completion
 		    DEST="/usr/share/bash-completion/completions/pistar-services"
 		    echo "#!/bin/bash" > $DEST
@@ -1537,7 +1589,7 @@ EOF
 		    echo "" >> $DEST
 		    chown root:root $DEST
 		    chmod 0644 $DEST
-		    
+
 		    # Remove obsolete MobileGPS service
 		    systemctl stop mobilegps.timer
 		    systemctl stop mobilegps.service
@@ -1545,9 +1597,9 @@ EOF
 		    systemctl disable mobilegps.service
 		    rm -f /lib/systemd/system/mobilegps.timer
 		    rm -f /lib/systemd/system/mobilegps.service
-		    
+
 		    systemctl daemon-reload
-		    
+
 		    # Install GPSd
 		    apt-get install -y libgps-dev gpsd
 
@@ -1555,7 +1607,7 @@ EOF
 		    sed -i 's/ListenStream=\[\:\:1\]\:2947/#ListenStream=\[\:\:1\]\:2947/g' /lib/systemd/system/gpsd.socket
 		    systemctl daemon-reload
 		    systemctl restart gpsd
-		    
+
 		    echo "WARNING: please update your Pi-Star using the Web interface or execute 'sudo pistar-update' NOW, then reboot"
 
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.26-RMB..."
@@ -1565,7 +1617,7 @@ EOF
 		else
 		    Message="In-place upgrades from 3.4.4 are not supported..."
 		fi
-	    else		
+	    else
 		Message="You are already running the latest version..."
 	    fi
 	;;
@@ -1580,9 +1632,9 @@ EOF
 		    /usr/bin/killall NextionDriver
 		    systemctl disable nextiondriver.service
 		    systemctl mask nextiondriver.service
-		    
+
 		    rm -f /lib/systemd/system/nextiondriver.service
-		    
+
 		    echo '[Unit]' > /lib/systemd/system/mmdvmhost.service
 		    echo 'Description=MMDVMHost Radio Service' >> /lib/systemd/system/mmdvmhost.service
 		    echo 'After=syslog.target network.target' >> /lib/systemd/system/mmdvmhost.service
@@ -1595,10 +1647,10 @@ EOF
 		    echo '' >> /lib/systemd/system/mmdvmhost.service
 		    echo '[Install]' >> /lib/systemd/system/mmdvmhost.service
 		    echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mmdvmhost.service
-		    
+
 		    systemctl daemon-reload
 		    systemctl restart mmdvmhost.service
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.27-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1615,7 +1667,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo415RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.28-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1632,7 +1684,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo416RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.29-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1649,7 +1701,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo417RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.30-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1668,7 +1720,7 @@ EOF
 		    echo -e "#!/bin/bash\n/usr/local/sbin/pistar-hourly.cron\n" > /etc/cron.hourly/pistar-hourly
 		    chown root:root /etc/cron.hourly/pistar-hourly
 		    chmod 0755 /etc/cron.hourly/pistar-hourly
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.31-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1685,7 +1737,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo3431RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.32-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1702,7 +1754,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo419RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.33-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1719,7 +1771,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo4110RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.34-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1736,7 +1788,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo4111RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.35-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1753,7 +1805,7 @@ EOF
 		    /usr/local/sbin/pistar-motdgen
 
 		    upgradeTo4112RMB
-		    
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.36-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1788,8 +1840,8 @@ EOF
 		    # Re-create the MOTD
 		    /usr/local/sbin/pistar-motdgen
 
-		    upgradeTo4113RMB
-		    
+		    upgradeTo4114RMB
+
 		    Message="Upgraded from ${pistarCurVersion} to 3.4.38-RMB..."
 		    echo $Message
 		    exec "$0" "$@"
@@ -1818,6 +1870,23 @@ EOF
 		fi
 	;;
 	3.4.39-RMB)
+		if [ ! -z "${pistarHardware}" ]; then
+		    sed -i 's/3.4.39-RMB/3.4.40-RMB/g' /etc/pistar-release
+
+		    # Re-create the MOTD
+		    /usr/local/sbin/pistar-motdgen
+
+		    upgradeTo4115RMB
+
+		    Message="Upgraded from ${pistarCurVersion} to 3.4.40-RMB..."
+		    echo $Message
+		    exec "$0" "$@"
+		    exit 1
+		else
+		    Message="In-place upgrades from 3.4.4 are not supported..."
+		fi
+	;;
+	3.4.40-RMB)
 		Message="You are already running the latest version..."
 	;;
 	4.0.*)
@@ -1946,7 +2015,7 @@ EOF
 		echo '' >> /lib/systemd/system/mobilegps.timer
 		echo '[Install]' >> /lib/systemd/system/mobilegps.timer
 		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.timer
-		
+
 		# Disable SAMBA
 		systemctl stop smbd
 		systemctl stop nmbd
@@ -1954,17 +2023,17 @@ EOF
 		LC_ALL=C systemctl disable nmbd > /dev/null 2<&1
 		systemctl mask smbd
 		systemctl mask nmbd
-		
+
 		# Disable agetty on tty1
 		systemctl stop getty@tty1.service
 		systemctl disable getty@tty1.service
-		
+
 		# Tweaking avahi
 		sed -i 's/^publish-hinfo=.*/publish-hinfo=yes/g;s/^publish-workstation=.*/publish-workstation=yes/g' /etc/avahi/avahi-daemon.conf
 		sed -i 's/^use-ipv6=.*/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
 
 		# HTTP and SSH avahi services
-		cat << EOF > /etc/avahi/services/http.service 
+		cat << EOF > /etc/avahi/services/http.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -1975,7 +2044,7 @@ EOF
 </service>
 </service-group>
 EOF
-		cat << EOF > /etc/avahi/services/ssh.service 
+		cat << EOF > /etc/avahi/services/ssh.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -1988,10 +2057,10 @@ EOF
 EOF
 
 		systemctl restart avahi-daemon
-		
+
 		systemctl daemon-reload
 		systemctl enable mobilegps.timer
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2030,7 +2099,7 @@ EOF
 	;;
 	4.1.0-RC8)
 		sed -i 's/4.1.0-RC8/4.1.0-RC9/g' /etc/pistar-release
-		
+
 		# Fix up random seed
 		cp /lib/systemd/system/systemd-random-seed.service /etc/systemd/system/systemd-random-seed.service
 		sed -i '/ExecStart=\/lib\/systemd\/systemd-random-seed load/a ExecStop=\/bin\/mount -o remount,rw \/' /etc/systemd/system/systemd-random-seed.service
@@ -2074,7 +2143,7 @@ EOF
 		echo '' >> /lib/systemd/system/mobilegps.timer
 		echo '[Install]' >> /lib/systemd/system/mobilegps.timer
 		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mobilegps.timer
-		
+
 		# Disable SAMBA
 		systemctl stop smbd
 		systemctl stop nmbd
@@ -2082,17 +2151,17 @@ EOF
 		LC_ALL=C systemctl disable nmbd > /dev/null 2<&1
 		systemctl mask smbd
 		systemctl mask nmbd
-		
+
 		# Disable agetty on tty1
 		systemctl stop getty@tty1.service
 		systemctl disable getty@tty1.service
-		
+
 		# Tweaking avahi
 		sed -i 's/^publish-hinfo=.*/publish-hinfo=yes/g;s/^publish-workstation=.*/publish-workstation=yes/g' /etc/avahi/avahi-daemon.conf
 		sed -i 's/^use-ipv6=.*/use-ipv6=no/g' /etc/avahi/avahi-daemon.conf
 
 		# HTTP and SSH avahi services
-		cat << EOF > /etc/avahi/services/http.service 
+		cat << EOF > /etc/avahi/services/http.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -2103,7 +2172,7 @@ EOF
 </service>
 </service-group>
 EOF
-		cat << EOF > /etc/avahi/services/ssh.service 
+		cat << EOF > /etc/avahi/services/ssh.service
 <?xml version="1.0" standalone='no'?><!--*-nxml-*-->
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
 <service-group>
@@ -2116,10 +2185,10 @@ EOF
 EOF
 
 		systemctl restart avahi-daemon
-		
+
 		systemctl daemon-reload
 		systemctl enable mobilegps.timer
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2131,13 +2200,13 @@ EOF
 	;;
 	4.1.0-RC10)
 		sed -i 's/4.1.0-RC10/4.1.0-RC11/g' /etc/pistar-release
-		
+
 		# Fix the missing rng-tools
 		apt-get update && apt-get install --reinstall rng-tools
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RC11..."
 		echo $Message
@@ -2146,10 +2215,10 @@ EOF
 	;;
 	4.1.0-RC11)
 		sed -i 's/4.1.0-RC11/4.1.0/g' /etc/pistar-release
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0..."
 		echo $Message
@@ -2158,12 +2227,12 @@ EOF
 	;;
 	4.1.0)
 		sed -i 's/4.1.0$/4.1.0-RMB/g' /etc/pistar-release
-		
+
 		upgradeTo410RMB
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.0-RMB..."
 		echo $Message
@@ -2175,7 +2244,7 @@ EOF
 
 		# Fix up issues with missing ralink firmware
 		apt-get update && apt-get install --reinstall -y firmware-ralink
-	    
+
 		# Disable unattended-upgrades, no background python process please,
 		# this is a RPi (zero possibly).
 		# Now, it's triggered by the pistar daily cron job (waaayyyyy enough)
@@ -2197,7 +2266,7 @@ EOF
 
 		upgradeTo410RMB
 		upgradeTo411RMB
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2209,7 +2278,7 @@ EOF
 	;;
 	4.1.1-RMB)
 		sed -i 's/4.1.1-RMB/4.1.2-RMB/g' /etc/pistar-release
-	    
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2224,7 +2293,7 @@ EOF
 
 		# Enable the service
 		systemctl daemon-reload
-		
+
 		# Modify the /boot/config.txt to bring it up to date
 		sed -i '/USB Current/d' /boot/config.txt
 		sed -i '/max_usb_current/d' /boot/config.txt
@@ -2313,7 +2382,7 @@ EOF
 
 		# Restart nginx to complete the setup
 		systemctl restart nginx
-		
+
 		# OK we are done
 		Message="Upgraded from ${pistarCurVersion} to 4.1.2-RMB..."
 		echo $Message
@@ -2326,7 +2395,7 @@ EOF
 		upgradeTo410RMB
 		upgradeTo411RMB
 		upgradeTo412RMB
-		
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2351,12 +2420,12 @@ EOF
 	;;
 	4.1.3)
 		sed -i 's/4.1.3$/4.1.3-RMB/g' /etc/pistar-release
-	    
+
 		upgradeTo410RMB
 		upgradeTo411RMB
 		upgradeTo412RMB
 		upgradeTo413RMB
-	    
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2388,13 +2457,13 @@ EOF
 		echo '' >> /lib/systemd/system/mmdvmhost.service
 		echo '[Install]' >> /lib/systemd/system/mmdvmhost.service
 		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/mmdvmhost.service
-		
+
 		systemctl daemon-reload
 		systemctl restart mmdvmhost.service
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.4-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2402,12 +2471,12 @@ EOF
 	;;
 	4.1.4)
 		sed -i 's/4.1.4$/4.1.3-RMB/g' /etc/pistar-release
-	    
+
 		upgradeTo410RMB
 		upgradeTo411RMB
 		upgradeTo412RMB
 		upgradeTo413RMB
-	    
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2421,10 +2490,10 @@ EOF
 		sed -i 's/4.1.4-RMB/4.1.5-RMB/g' /etc/pistar-release
 
 		upgradeTo415RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.5-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2432,12 +2501,12 @@ EOF
 	;;
 	4.1.5)
 		sed -i 's/4.1.5$/4.1.3-RMB/g' /etc/pistar-release
-	    
+
 		upgradeTo410RMB
 		upgradeTo411RMB
 		upgradeTo412RMB
 		upgradeTo413RMB
-	    
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2451,10 +2520,10 @@ EOF
 		sed -i 's/4.1.5-RMB/4.1.6-RMB/g' /etc/pistar-release
 
 		upgradeTo416RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.6-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2462,12 +2531,12 @@ EOF
 	;;
 	4.1.6)
 		sed -i 's/4.1.6$/4.1.3-RMB/g' /etc/pistar-release
-	    
+
 		upgradeTo410RMB
 		upgradeTo411RMB
 		upgradeTo412RMB
 		upgradeTo413RMB
-	    
+
 		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
 
@@ -2481,10 +2550,10 @@ EOF
 		sed -i 's/4.1.6-RMB/4.1.7-RMB/g' /etc/pistar-release
 
 		upgradeTo417RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.7-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2494,10 +2563,10 @@ EOF
 		sed -i 's/4.1.7-RMB/4.1.8-RMB/g' /etc/pistar-release
 
 		upgradeTo418RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.8-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2507,10 +2576,10 @@ EOF
 		sed -i 's/4.1.8-RMB/4.1.9-RMB/g' /etc/pistar-release
 
 		upgradeTo419RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.9-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2520,10 +2589,10 @@ EOF
 		sed -i 's/4.1.9-RMB/4.1.10-RMB/g' /etc/pistar-release
 
 		upgradeTo4110RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.10-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2533,10 +2602,10 @@ EOF
 		sed -i 's/4.1.10-RMB/4.1.11-RMB/g' /etc/pistar-release
 
 		upgradeTo4111RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.11-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2546,10 +2615,10 @@ EOF
 		sed -i 's/4.1.11-RMB/4.1.12-RMB/g' /etc/pistar-release
 
 		upgradeTo4112RMB
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.12-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2559,10 +2628,10 @@ EOF
 		sed -i 's/4.1.12-RMB/4.1.13-RMB/g' /etc/pistar-release
 
 		apt-get update --allow-releaseinfo-change
-		
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.13-RMB..."
 		echo $Message
 		exec "$0" "$@"
@@ -2570,18 +2639,31 @@ EOF
 	;;
 	4.1.13-RMB)
 		sed -i 's/4.1.13-RMB/4.1.14-RMB/g' /etc/pistar-release
-	    
-		upgradeTo4113RMB
-		
+
+		upgradeTo4114RMB
+
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
-		
+
 		Message="Upgraded from ${pistarCurVersion} to 4.1.14-RMB..."
 		echo $Message
 		exec "$0" "$@"
 		exit 1
-	;;	    
+	;;
 	4.1.14-RMB)
+		sed -i 's/4.1.14-RMB/4.1.15-RMB/g' /etc/pistar-release
+
+		upgradeTo4115RMB
+
+ 		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+
+		Message="Upgraded from ${pistarCurVersion} to 4.1.15-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.15-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
