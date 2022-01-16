@@ -530,7 +530,7 @@ function upgradeTo4115RMB()
     # Install M17Gateway service files
 cat << EOF > /etc/systemd/system/m17gateway.service
 [Unit]
-Description=M17 Servce
+Description=M17 Service
 After=syslog.target network.target mmdvmhost.timer
 
 [Service]
