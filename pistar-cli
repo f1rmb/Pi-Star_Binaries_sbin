@@ -2,7 +2,7 @@
 # -*- mode: shell-script; -*-
 
 # Script that manage few things on Pi-Star
-# Copyright (C) 2019-2020 F1RMB - Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
+# Copyright (C) 2019-2022 F1RMB - Daniel Caujolle-Bert <f1rmb.daniel@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-VERSION_STRING="0.0.10"
+VERSION_STRING="0.0.20"
 BACKUP_ROOT_DIR="/var/backups/pistar"
 BACKUP_CATALOG="$BACKUP_ROOT_DIR/catalog"
 
@@ -45,12 +45,12 @@ function _ro() {
 function CtrlC() {
     echo -ne "\n   <Ctrl-C> has been pressed. Do you want to quit (y/N) ?> "
     read c
-    
+
     case "$c" in
 	y|yes|Y|YES)
 	    exit 1
 	    ;;
-	
+
 	*)
 	    return 0
 	    ;;
@@ -67,7 +67,7 @@ function MenuPrompt() {
     echo "   q: Exit"
     echo -n "?> "
     read r
-    
+
     re='^[0-9]+$'
 
     if [ -z "$r" ]; then
@@ -77,6 +77,46 @@ function MenuPrompt() {
     else
 	return $(printf '%d' "'$r")
     fi
+}
+
+function DisplayGatewaysStatus() {
+    echo -e "\n   Gateways status:"
+    echo "   ---------------"
+
+    GWs="MMDVMHost DMRGateway YSFGateway P25Gateway NXDNGateway M17Gateway"
+
+    for g in $GWs; do
+	section="Remote Commands"
+
+	if [ "$g" == "DMRGateway" -o "$g" == "MMDVMHost" ]; then
+	    section="Remote Control"
+	fi
+
+	port=$(sed -n '/^\['"$section"'\]/,/^\[/p' /etc/${g,,} | grep "^Port" | awk -F '=' '{print $2}')
+	#addr=$(sed -n '/^\['"$section"'\]/,/^\[/p' /etc/${g,,} | grep "^Address" | awk -F '=' '{print $2}')
+	#if [ -z "$addr" ]; then
+	#    addr="127.0.0.1"
+	#fi
+
+	mapfile -t status < <(cd /var/log/pi-star; RemoteCommand $port status)
+	mapfile -t hosts < <(cd /var/log/pi-star; RemoteCommand $port hosts)
+
+	if [ ! -z "${status[1]}" ]; then
+	    echo -e "\t* $g:"  ### port:$port ${hosts[1]}"
+
+	    read -r -a statusArray <<< "${status[1]}"
+
+	    IFS=$'\n'
+	    ##hostsArray=($(echo -e "${hosts[1]}" | sed -E 's/([a-zA-Z0-9]+)(:)("[a-zA-Z0-9\+-_. ]+")\s?/\1\2\3\n/g'))
+	    hostsArray=($(echo -e "${hosts[1]}" | sed -E 's/([a-zA-Z0-9]+)(:)("[^"]*")\s?/\1\2\3\n/g'))
+	    unset IFS
+
+	    total=${#hostsArray[@]}
+	    for (( i = 0; i < $(($total)); i++ )); do
+		echo -e "\t  - ${statusArray[i]%%:*} => ${statusArray[i]##*:} to ${hostsArray[i]##*:}"
+	    done
+	fi
+    done
 }
 
 ## Services menu
@@ -89,9 +129,10 @@ function MenuServices() {
 	echo "   3: Full Stop Services"
 	echo "   4: Restart Services"
 	echo "   5: Services Status."
+	echo "   6: Gateways Status."
 	MenuPrompt
 	r=$?
-	
+
 	case "$r" in
 	    1)
 		/usr/local/sbin/pistar-services start
@@ -118,6 +159,11 @@ function MenuServices() {
 		echo "[OK]"
 		;;
 
+	    6)
+		DisplayGatewaysStatus
+		echo "[OK]"
+		;;
+
 	    113|81)
 		break
 		;;
@@ -129,25 +175,25 @@ function MenuServices() {
 function RebuildBackupCatalog() {
     if [ -f $BACKUP_CATALOG -a -s $BACKUP_CATALOG ]; then
 	declare -a lines
-	
+
 	while read l; do
 	    lines+=("$l")
 	done < $BACKUP_CATALOG
-	
+
 	_rw
 	let n=0
 	for l in "${lines[@]}"; do
 	    location=$(echo "$l" | awk 'BEGIN { FS=":" } { print $2 }')
-	    
+
 	    if [ ! -e "$BACKUP_ROOT_DIR/$location/config_backup.zip" ] || [ -e "$BACKUP_ROOT_DIR/$location/config_backup.zip" -a ! -s "$BACKUP_ROOT_DIR/$location/config_backup.zip" ]; then
 		rm -rf $BACKUP_ROOT_DIR/$location/config_backup.zip > /dev/null 2>&1
 		rmdir $BACKUP_ROOT_DIR/$location > /dev/null 2>&1
 		unset 'lines[n]'
 	    fi
-	    
+
 	    ((n++))
 	done
-	
+
 	rm -f $BACKUP_CATALOG > /dev/null 2>&1
 	for l in "${lines[@]}"; do
 	    echo "$l" >> $BACKUP_CATALOG
@@ -157,7 +203,7 @@ function RebuildBackupCatalog() {
 	sort -t ':' -k1g,1 -o $BACKUP_CATALOG < $BACKUP_CATALOG
 
 	_ro
-	
+
     fi
 }
 
@@ -167,19 +213,19 @@ function DoBackup() {
     oldTS="$2"
     backupDir="/tmp/config_backup"
     backupZip="/tmp/config_backup.zip"
-    
+
     echo -n "Backing files up..."
 
     rm -rf $backupZip > /dev/null 2>&1
     rm -rf $backupDir > /dev/null 2>&1
     mkdir -p $backupDir > /dev/null 2>&1
-    
+
     if [ -f /etc/dhcpcd.conf ]; then
 	if [ ! -z "`cat /etc/dhcpcd.conf | grep \"static ip_address\" | grep -v \"#\"`" ]; then
             cp /etc/dhcpcd.conf $backupDir > /dev/null 2>&1
 	fi
     fi
-    
+
     files=("/etc/wpa_supplicant/wpa_supplicant.conf" "/etc/hostapd/hostapd.conf" "/etc/pistar-css.ini" "/etc/ircddbgateway" "/etc/mmdvmhost" "/etc/dstarrepeater"
 	   "/etc/dapnetgateway" "/etc/p25gateway" "/etc/ysfgateway" "/etc/dgidgateway" "/etc/nxdngateway" "/etc/m17gateway"  "/etc/ysf2dmr" "/etc/ysf2nxdn"
 	   "/etc/ysf2p25" "/etc/dmr2nxdn" "/etc/dmr2ysf" "/etc/nxdn2dmr" "/etc/dmrgateway" "/etc/starnetserver" "/etc/timeserver" "/etc/theshield.enabled"
@@ -187,35 +233,35 @@ function DoBackup() {
 	   "/etc/tinyfilemanager-auth.php" "/etc/tinyfilemanager-config.php" "/usr/local/etc/RSSI.dat" "/usr/local/etc/pistar-upnp.service.functions"
 	   "/var/www/dashboard/config/ircddblocal.php" "/var/www/dashboard/config/config.php" "/var/www/dashboard/config/language.php"
 	   "/root/*Hosts.txt")
-    
+
     # Copy files
     for f in "${files[@]}"; do
 	cp -f $f $backupDir > /dev/null 2>&1
     done
-    
+
     zip -j $backupZip $backupDir/* > /dev/null 2>&1
 
     timestamp=$(date +"%Y-%m-%d_%H-%M-%S")
 
     _rw
-    
+
     mkdir -p $BACKUP_ROOT_DIR/$timestamp
     mv $backupZip $BACKUP_ROOT_DIR/$timestamp
 
     echo -e "\b\b\b: DONE."
-    
+
     ## Add entry, or replace entry (according to $2), to the catalog
     if [ -z "$oldTS" ]; then
 	echo "$backupName:$timestamp" >> $BACKUP_CATALOG
     else
 	declare -a lines
-	
+
 	while read l; do
 	    lines+=("$l")
 	done < $BACKUP_CATALOG
-	
+
 	rm -f $BACKUP_CATALOG > /dev/null 2>&1
-	
+
 	for l in "${lines[@]}"; do
 	    name=$(echo "$l" | awk 'BEGIN { FS=":" } { print $1 }')
 	    location=$(echo "$l" | awk 'BEGIN { FS=":" } { print $2 }')
@@ -232,9 +278,9 @@ function DoBackup() {
 
     # Sort the catalog
     sort -t ':' -k1g,1 -o $BACKUP_CATALOG < $BACKUP_CATALOG
-    
+
     _ro
-    
+
     echo "[OK] ** \"$backupName\" backed up."
 }
 
@@ -245,14 +291,14 @@ function LookupBackup() {
 	while read l; do
 	    name=$(echo "$l" | awk 'BEGIN { FS=":" } { print $1 }')
 	    location=$(echo "$l" | awk 'BEGIN { FS=":" } { print $2 }')
-	    
+
 	    if [[ "$n" == "$name" ]]; then
 		echo "$location"
 		return 0
 	    fi
 	done < $BACKUP_CATALOG
     fi
-    
+
     # Not found
     echo ""
     return 1
@@ -269,9 +315,9 @@ function BackupCurrentConfig() {
 	else
 	    a="$1"
 	fi
-	
+
 	if [ ! -z "$a" ]; then
-	    
+
 	    ## Lookup existing backup with same name
 	    r=$(echo "$a" | tr -s \: _)
 	    b=$(LookupBackup "$r")
@@ -286,7 +332,7 @@ function BackupCurrentConfig() {
 		else
 		    ov="Y"
 		fi
-		    
+
 		case "$ov" in
 		    "y"|"Y")
 			## Remove old backup dir
@@ -339,10 +385,10 @@ function ListAvailableBackups() {
 
 ## Execute backup restoration, restarts services
 function DoRestore() {
-    backupLocation="$BACKUP_ROOT_DIR/$1"    
+    backupLocation="$BACKUP_ROOT_DIR/$1"
     backupName="$2"
     restoreDir="/tmp/config_restore"
-    
+
     rm -rf $restoreDir > /dev/null 2>&1
     mkdir -p $restoreDir > /dev/null 2>&1
     unzip $backupLocation/config_backup.zip -d $restoreDir > /dev/null 2>&1
@@ -351,15 +397,15 @@ function DoRestore() {
 
     echo -n "Restoring files..."
     _rw
-    
+
     ## Moving files
     rm -f /etc/dstar-radio.* /etc/bmapi.key /etc/dapnetapi.key /etc/theshield.enabled > /dev/null 2>&1
     mv -f /tmp/config_restore/RSSI.dat /usr/local/etc/ > /dev/null 2>&1
-    
+
     mv -f /tmp/config_restore/pistar-upnp.service.functions /usr/local/etc/ > /dev/null 2>&1
     chown root:staff /usr/local/etc/pistar-upnp.service.functions
     chmod 0644 /usr/local/etc/pistar-upnp.service.functions
-    
+
     mv -f /tmp/config_restore/gpsd /etc/default/ > /dev/null 2>&1
     mv -f /tmp/config_restore/ircddblocal.php /var/www/dashboard/config/ > /dev/null 2>&1
     mv -f /tmp/config_restore/config.php /var/www/dashboard/config/ > /dev/null 2>&1
@@ -368,11 +414,11 @@ function DoRestore() {
     mv -v -f /tmp/config_restore/hostapd.conf /etc/hostapd/ > /dev/null 2>&1
     mv -v -f /tmp/config_restore/wpa_supplicant.conf /etc/wpa_supplicant/ > /dev/null 2>&1
     mv -v -f /tmp/config_restore/* /etc/ > /dev/null 2>&1
-    
+
     ## Restore the timezone
     timeZone=$(grep date /var/www/dashboard/config/config.php | grep -o "'.*'" | sed "s/'//g")
     timedatectl set-timezone $timeZone
-    
+
     ## Restore ircDDGBateway link manager password
     ircRemotePassword=$(grep remotePassword /etc/ircddbgateway | awk -F'=' '{print $2}')
     sed -i "/password=/c\\password=$ircRemotePassword" /root/.Remote\ Control
@@ -382,11 +428,11 @@ function DoRestore() {
 	echo -n " Updating hosts file (may take some time)..."
 	/usr/local/sbin/HostFilesUpdate.sh
     fi
-    
+
     _ro
 
     echo -e "\b\b\b: DONE."
-    
+
     /usr/local/sbin/pistar-services start
     if [ "$(grep "pistar-upnp.service" /etc/crontab | cut -c 1)" != "#" ]; then
 	systemctl start pistar-upnp.service > /dev/null 2>&1
@@ -402,7 +448,7 @@ function RestoreBackup() {
 	echo -e "\n   Available backups:"
 	echo "   -----------------"
     fi
-    
+
     if [ -f $BACKUP_CATALOG -a -s $BACKUP_CATALOG ]; then
 	let n=0
 	declare -a names locations
@@ -418,11 +464,11 @@ function RestoreBackup() {
 	    fi
 	fi
 
-	
+
 	while read l; do
 	    names[n]=$(echo "$l" | awk 'BEGIN { FS=":" } { print $1 }')
 	    locations[n]=$(echo "$l" | awk 'BEGIN { FS=":" } { print $2 }')
-	    
+
 	    if [ -z "$1" ]; then
 		echo "     $n -> \"${names[n]}\" (timestamp: ${locations[n]})"
 	    else
@@ -432,7 +478,7 @@ function RestoreBackup() {
 		    fi
 		fi
 	    fi
-	    
+
 	    ((n++))
 	done < $BACKUP_CATALOG
 
@@ -440,19 +486,19 @@ function RestoreBackup() {
 	    echo "    [EMPTY] -> Cancels Operation"
 	    echo "Enter the number to restore"
 	    echo -n "?> "
-	    
+
 	    read o
 
 	else
 	    o=$numberToRestore
 	fi
-	    
+
  	let offset=-1
-	
+
 	if [ ! -z $o ]; then
 	    offset=$(($o))
 	fi
-	
+
 	# Check in boundaries
 	if [ $offset -ge 0 -a $offset -lt ${#locations[@]} ]; then
 	    if [ ! -z "$1" ]; then
@@ -472,7 +518,7 @@ function DeleteBackup() {
     if [ -f $BACKUP_CATALOG -a -s $BACKUP_CATALOG ]; then
 	let n=0
 	declare -a names locations
-	
+
 	while read l; do
 	    names[n]=$(echo "$l" | awk 'BEGIN { FS=":" } { print $1 }')
 	    locations[n]=$(echo "$l" | awk 'BEGIN { FS=":" } { print $2 }')
@@ -484,7 +530,7 @@ function DeleteBackup() {
 	echo "    [EMPTY] -> Cancels Operation"
 	echo "Enter the number to delete"
 	echo -n "?> "
-	
+
 	read o
 	let offset=-1
 
@@ -498,7 +544,7 @@ function DeleteBackup() {
 	    # Delete backup directory
 	    _rw
 	    rm -rf $BACKUP_ROOT_DIR/${locations[$offset]} > /dev/null 2>&1
-	    
+
 	    # Recreate catalog
 	    rm -f $BACKUP_CATALOG > /dev/null 2>&1
 	    for n in $(seq 0 $(($fCount - 1))); do
@@ -507,12 +553,12 @@ function DeleteBackup() {
 		fi
 	    done
 	    _ro
-	    
+
 	    echo "[OK] ** Backup \"${names[$offset]}\" deleted."
 	else
 	    echo "[ERR] ** Specified offset is out of boundaries."
 	fi
-	
+
 
     else
 	echo "[NONE]"
@@ -530,7 +576,7 @@ function MenuBackupRestore() {
 	echo "   4: Delete a backup"
 	MenuPrompt
 	r=$?
-	
+
 	case "$r" in
 	    1)
 		ListAvailableBackups
@@ -553,7 +599,7 @@ function MenuBackupRestore() {
 	    113|81)
 		break
 		;;
-	    
+
 	    *)
 		echo "[ERR]"
 		;;
@@ -570,21 +616,21 @@ function ShowModem() {
 	# Get the modem that the user has selected.
 	modemSelected=$(grep 'Hardware=' /etc/dstar-radio.mmdvmhost)
 	modemSelected=${modemSelected#*=}
-	
+
 	# Get the user friendly version of the selected Modem.
 	modemSelectedHuman=$(grep value=\"${modemSelected}\" /var/www/dashboard/admin/configure.php | head -n 1)
 	modemSelectedHuman=${modemSelectedHuman#*\">}
 	modemSelectedHuman=${modemSelectedHuman::-9}
 	echo " Selected Modem:     ${modemSelectedHuman}"
     fi
-    
+
     # Get the Modem info from the Log
     numLogs=$(ls -1rt /var/log/pi-star/MMDVM-*.log 2>/dev/null | wc -l)
     if [[ ${numLogs} -gt 0 ]]; then
 	# Get the physically connected modem from the logs
 	modemLog=$(tac $(ls -1rt /var/log/pi-star/MMDVM-*.log | tail -n1 ) | grep "protocol" -m 1 | sed -n 's/description: /&\n/;s/.*\n//p')
 	echo " Connected Hardware: ${modemLog}"
-	
+
 	# Get the TCXO data
 	if [[ ${modemLog} == *"MHz"* ]]; then
 	    tcxoData=$(echo ${modemLog} | awk '{print $3}')
@@ -599,7 +645,7 @@ function ModemTools() {
     while true; do
 	echo -e "\n"
 	ShowModem
-	
+
 	echo -e "\n   Modem Tools:"
 	echo "   -----------"
 	echo "                *** MMDVM Devices ***"
@@ -625,7 +671,7 @@ function ModemTools() {
 	echo "   16: MMDVM Calibration"
 	MenuPrompt
 	r=$?
-	
+
 	case "$r" in
 	    1)
 		/usr/local/sbin/pistar-mmdvmhshatflash hs_hat
@@ -655,7 +701,7 @@ function ModemTools() {
 		/usr/local/sbin/pistar-mmdvmhshatreset
 		break
 		;;
-	    
+
 	    7)
 		/usr/local/sbin/pistar-zumspotflash rpi
 		break
@@ -685,7 +731,7 @@ function ModemTools() {
 		/usr/local/sbin/pistar-vyehsflash hs_dual_hat
 		break
 		;;
-	    
+
 	    13)
 		/usr/local/sbin/pistar-mdoflash uhf
 		break
@@ -705,11 +751,11 @@ function ModemTools() {
 		/usr/local/sbin/pistar-mmdvmcal
 		break
 		;;
-	    
+
 	    113|81)
 		break
 		;;
-	    
+
 	    *)
 		echo "[ERR]"
 		;;
@@ -741,7 +787,7 @@ function MenuSystem() {
 	echo "   6: System Shutdown"
 	MenuPrompt
 	r=$?
-	
+
 	case "$r" in
 	    1)
 		/usr/local/sbin/pistar-update
@@ -773,11 +819,11 @@ function MenuSystem() {
 		shutdown --no-wall -P now
 		exit 0
 		;;
-	    
+
 	    113|81)
 		break
 		;;
-	    
+
 	    *)
 		echo "[ERR]"
 		;;
@@ -820,7 +866,7 @@ SanityCheck
 
 # Command line arguments
 if [[ $# -gt 0 ]]; then
-    
+
     case "$1" in
 	"backup"|"--backup")
 	    BackupCurrentConfig "$2"
@@ -841,9 +887,9 @@ if [[ $# -gt 0 ]]; then
 	    echo "[ERR]"
 	    ;;
     esac
-    
+
 else # Interactive
-    
+
     let loop=1
     while [ $loop == 1 ]; do
 	echo "`basename $0` v$VERSION_STRING"
@@ -854,29 +900,29 @@ else # Interactive
 	echo "   3: System"
 	MenuPrompt
 	r=$?
-	
+
 	case "$r" in
 	    1)
 		MenuServices
 		;;
-	    
+
 	    2)
 		MenuBackupRestore
 		;;
-	    
+
 	    3)
 		MenuSystem
 		;;
-	    
+
 	    113|81)
 		let loop=0
 		;;
-	    
+
 	    *)
 		echo "[ERR]"
 		;;
 	esac
     done
-    
+
 fi
 exit 0
