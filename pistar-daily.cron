@@ -17,6 +17,7 @@ git --work-tree=/var/www/dashboard --git-dir=/var/www/dashboard/.git pull origin
 
 # Stop all the services...
 /usr/local/sbin/pistar-services fullstop
+mount -o remount,rw /
 
 # Update the Binaries
 git --work-tree=/usr/local/bin --git-dir=/usr/local/bin/.git pull origin master
