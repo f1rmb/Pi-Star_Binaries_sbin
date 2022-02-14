@@ -854,6 +854,9 @@ function Usage() {
 	echo "  version, --version                        : Display current version then exit."
 	echo "  help,    --help                           : Display help text then exit."
 	echo ""
+	echo "- if for some reason you don't want to update all the host files, you can set NO_HOSTS_UPDATE environment variable to something, like:"
+	echo " $> sudo NO_HOSTS_UPDATE=1 pistar-cli restore 0"
+	echo ""
 }
 
 ## Main
