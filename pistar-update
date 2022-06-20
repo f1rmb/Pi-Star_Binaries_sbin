@@ -353,6 +353,16 @@ main_function() {
 		echo "Done"
 	fi
 
+	# Add Portuguese voice files for DMRGateway
+	if [[ ! -f /usr/local/etc/DMR_Audio/pt_PT.ambe ]]; then
+		echo "Downloading Portuguese Voice Files for DMRGateway..."
+		curl --fail -o /usr/local/etc/DMR_Audio/pt_PT.ambe -s https://raw.githubusercontent.com/g4klx/DMRGateway/master/Audio/pt_PT.ambe
+		curl --fail -o /usr/local/etc/DMR_Audio/pt_PT.indx -s https://raw.githubusercontent.com/g4klx/DMRGateway/master/Audio/pt_PT.indx
+		chmod 664 /usr/local/etc/DMR_Audio/*.ambe
+		chmod 664 /usr/local/etc/DMR_Audio/*.indx
+		echo "Done"
+	fi
+
 	# Add Portuguese voice files for ircDDBGateway
 	if [[ ! -f /usr/local/etc/pt_PT.ambe ]]; then
 		echo "Downloading Portuguese Voice Files for ircDDBGateway..."
