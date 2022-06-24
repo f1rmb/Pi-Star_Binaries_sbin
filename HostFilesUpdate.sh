@@ -117,8 +117,9 @@ fi
 curl --fail -o /tmp/DMRIds_1.dat -s http://www.pistar.uk/downloads/DMRIds.dat
 curl --fail -o /tmp/DMRIds_2.dat -s http://registry.dstar.su/dmr/DMRIds2.php
 
-cat /tmp/DMRIds_1.dat /tmp/DMRIds_2.dat /tmp/DMRIds_3.dat 2>/dev/null | grep -v ^# | awk '($1 > 999999) && ($1 < 10000000) { print $0 }' | sort -un -k1n -o ${DMRIDFILE}
-rm -f /tmp/DMRIds_1.dat /tmp/DMRIds_2.dat /tmp/DMRIds_3.dat
+## Build / Sort / Remove duplicates / .... / DMR IDs list
+cat /tmp/DMRIds_1.dat /tmp/DMRIds_2.dat /root/DMRIds.dat 2>/dev/null | grep -v ^# | awk '($1 > 999999) && ($1 < 10000000) { print $0 }' | sort -un -k1n -o ${DMRIDFILE}
+rm -f /tmp/DMRIds_1.dat /tmp/DMRIds_2.dat
 
 # Some downloaded files are badly encoded, fix this on the fly.
 curl --fail -s http://www.pistar.uk/downloads/P25_Hosts.txt | ${ICONV_TO_ASCII} > ${P25HOSTS}
