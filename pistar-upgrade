@@ -2664,6 +2664,24 @@ EOF
 		exit 1
 	;;
 	4.1.15-RMB)
+		sed -i 's/4.1.15-RMB/4.1.16-RMB/g' /etc/pistar-release
+
+		## Remove all BT crap.
+		LC_ALL=C systemctl disable hciuart.service  > /dev/null 2<&1
+		LC_ALL=C systemctl disable bluealsa.service  > /dev/null 2<&1
+		LC_ALL=C systemctl disable bluetooth.service  > /dev/null 2<&1
+		apt-get remove --purge bluez -y  > /dev/null 2<&1
+		apt-get autoremove -y  > /dev/null 2<&1
+
+ 		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+
+		Message="Upgraded from ${pistarCurVersion} to 4.1.16-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.16-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
