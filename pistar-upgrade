@@ -2714,6 +2714,7 @@ EOF
 
 		sed -i 's/^\(deb http:\/\/raspbian\.raspberrypi\.org\)/deb https:\/\/mirror\.ipb\.de\/raspbian buster main contrib non-free rpi\n#\1/g' /etc/apt/sources.list
 		sed -i 's/httpredir/archive/g' /etc/apt/sources.list.d/stretch-backports.list
+		apt-get update
 
  		# Re-create the MOTD
 		/usr/local/sbin/pistar-motdgen
