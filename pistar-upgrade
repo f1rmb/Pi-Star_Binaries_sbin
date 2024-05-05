@@ -2697,6 +2697,19 @@ EOF
 		exit 1
 	;;
 	4.1.17-RMB)
+		sed -i 's/4.1.17-RMB/4.1.18-RMB/g' /etc/pistar-release
+
+		apt-get install -y libsamplerate0-dev libsamplerate0
+
+ 		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+
+		Message="Upgraded from ${pistarCurVersion} to 4.1.18-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.18-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
