@@ -2709,22 +2709,41 @@ EOF
 		exec "$0" "$@"
 		exit 1
 	;;
-#	4.1.18-RMB)
-#		sed -i 's/4.1.18-RMB/4.1.19-RMB/g' /etc/pistar-release
+	4.1.18-RMB)
+		sed -i 's/4.1.18-RMB/4.1.19-RMB/g' /etc/pistar-release
 #
 #		sed -i 's/^\(deb http:\/\/raspbian\.raspberrypi\.org\)/deb https:\/\/mirror\.ipb\.de\/raspbian buster main contrib non-free rpi\n#\1/g' /etc/apt/sources.list
 #		sed -i 's/httpredir/archive/g' /etc/apt/sources.list.d/stretch-backports.list
 #		apt-get update
 
- 		# Re-create the MOTD
-#		/usr/local/sbin/pistar-motdgen
+		echo '[Unit]' > /lib/systemd/system/nxdn2dmr.service
+		echo 'Description=Pi-Star NXDN2DMR Service' >> /lib/systemd/system/nxdn2dmr.service
+		echo 'After=syslog.target network.target mmdvmhost.timer' >> /lib/systemd/system/nxdn2dmr.service
+		echo '' >> /lib/systemd/system/nxdn2dmr.service
+		echo '[Service]' >> /lib/systemd/system/nxdn2dmr.service
+		echo 'Type=forking' >> /lib/systemd/system/nxdn2dmr.service
+		echo 'ExecStart=/usr/local/sbin/nxdn2dmr.service start' >> /lib/systemd/system/nxdn2dmr.service
+		echo 'ExecStop=/usr/local/sbin/nxdn2dmr.service stop' >> /lib/systemd/system/nxdn2dmr.service
+		echo 'ExecReload=/usr/local/sbin/nxdn2dmr.service restart' >> /lib/systemd/system/nxdn2dmr.service
+		echo '' >> /lib/systemd/system/nxdn2dmr.service
+		echo '[Install]' >> /lib/systemd/system/nxdn2dmr.service
+		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/nxdn2dmr.service
 
-#		Message="Upgraded from ${pistarCurVersion} to 4.1.19-RMB..."
-#		echo $Message
-#		exec "$0" "$@"
-#		exit 1
-#	;;
-	4.1.18-RMB)
+		echo '[Timer]' > /lib/systemd/system/nxdn2dmr.timer
+		echo 'OnStartupSec=20' >> /lib/systemd/system/nxdn2dmr.timer
+		echo '' >> /lib/systemd/system/nxdn2dmr.timer
+		echo '[Install]' >> /lib/systemd/system/nxdn2dmr.timer
+		echo 'WantedBy=multi-user.target' >> /lib/systemd/system/nxdn2dmr.timer
+
+ 		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+
+		Message="Upgraded from ${pistarCurVersion} to 4.1.19-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.19-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
