@@ -2744,6 +2744,22 @@ EOF
 		exit 1
 	;;
 	4.1.19-RMB)
+		sed -i 's/4.1.19-RMB/4.1.20-RMB/g' /etc/pistar-release
+
+		if [ -f /etc/modprobe.d/ipv6.conf ]; then
+		    mv /etc/modprobe.d/ipv6.conf /etc/modprobe.d/ipv6.conf.disabled
+		    systemctl restart systemd-modules-load.service
+		fi
+		
+ 		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+
+		Message="Upgraded from ${pistarCurVersion} to 4.1.20-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.20-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
