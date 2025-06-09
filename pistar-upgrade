@@ -2760,6 +2760,20 @@ EOF
 		exit 1
 	;;
 	4.1.20-RMB)
+		sed -i 's/4.1.20-RMB/4.1.21-RMB/g' /etc/pistar-release
+
+		sed -i 's/httpredir/archive/g' /etc/apt/sources.list.d/stretch-backports.list
+		apt-get update
+
+		# Re-create the MOTD
+		/usr/local/sbin/pistar-motdgen
+
+		Message="Upgraded from ${pistarCurVersion} to 4.1.21-RMB..."
+		echo $Message
+		exec "$0" "$@"
+		exit 1
+	;;
+	4.1.21-RMB)
 		Message="You are already running the latest version..."
 	;;
 	*)
