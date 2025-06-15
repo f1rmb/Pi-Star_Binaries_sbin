@@ -24,7 +24,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-VERSION_STRING="0.0.20"
+VERSION_STRING="0.0.21"
 BACKUP_ROOT_DIR="/var/backups/pistar"
 BACKUP_CATALOG="$BACKUP_ROOT_DIR/catalog"
 
@@ -278,6 +278,9 @@ function DoBackup() {
 
     # Sort the catalog
     sort -t ':' -k1g,1 -o $BACKUP_CATALOG < $BACKUP_CATALOG
+
+    # Cleanup tmp
+    rm -rf $backupDir > /dev/null 2>&1
 
     _ro
 
